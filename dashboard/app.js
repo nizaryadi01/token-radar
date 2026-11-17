@@ -217,13 +217,14 @@
   $('sReset').addEventListener('click', function () { sandbox = { growth: M.growth_weight, maturity: M.maturity_range, breadth: M.breadth_per_chain }; syncSandbox(); });
 
   /* ---------- wiring ---------- */
+  function showView(v) {
+    state.view = v;
+    document.querySelectorAll('#tabs .tab').forEach(function (x) { x.classList.toggle('active', x.getAttribute('data-view') === v); });
+    ['board', 'live', 'aside', 'model'].forEach(function (x) { $('view-' + x).hidden = x !== v; });
+    if (v === 'board') renderBoard();
+  }
   document.querySelectorAll('#tabs .tab').forEach(function (t) {
-    t.addEventListener('click', function () {
-      state.view = t.getAttribute('data-view');
-      document.querySelectorAll('#tabs .tab').forEach(function (x) { x.classList.toggle('active', x === t); });
-      ['board', 'live', 'aside', 'model'].forEach(function (v) { $('view-' + v).hidden = v !== state.view; });
-      if (state.view === 'board') renderBoard();
-    });
+    t.addEventListener('click', function () { showView(t.getAttribute('data-view')); });
   });
   $('q').addEventListener('input', function () { state.q = this.value; renderBoard(); });
   $('cat').addEventListener('change', function () { state.cat = this.value; renderBoard(); });
@@ -247,8 +248,9 @@
     $('detail').scrollIntoView({ block: 'nearest' });
   });
 
-  /* ---------- deep links for the three handed-in views ---------- */
+  /* ---------- deep links for the handed-in views ---------- */
   var params = new URLSearchParams(location.search);
+  if (params.get('view') && ['board', 'live', 'aside', 'model'].indexOf(params.get('view')) >= 0) showView(params.get('view'));
   if (params.get('cat')) { state.cat = params.get('cat'); $('cat').value = state.cat; }
   if (params.get('watch') === '1') { state.watch = true; $('watchOnly').checked = true; }
   if (params.get('detail')) state.selected = params.get('detail');
