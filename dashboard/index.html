@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launch Radar — pre-token protocols ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-in">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div>
+        <h1>Launch Radar</h1>
+        <p class="tagline">Protocols that record no token yet, ranked by what their launch would be worth — and how to farm each one.</p>
+      </div>
+    </div>
+    <div class="mast-meta" id="mastMeta"></div>
+  </div>
+  <div class="stat-strip" id="statStrip"></div>
+</header>
+
+<nav class="tabs" id="tabs" aria-label="Views">
+  <button data-view="board" class="tab active">The board</button>
+  <button data-view="live" class="tab">Already trading</button>
+  <button data-view="aside" class="tab">Set aside</button>
+  <button data-view="model" class="tab">The model</button>
+</nav>
+
+<main>
+  <section id="view-board" class="view">
+    <div class="controls" id="controls">
+      <label class="ctl grow">Search
+        <input id="q" type="search" placeholder="protocol name or slug" autocomplete="off">
+      </label>
+      <label class="ctl">Category
+        <select id="cat"></select>
+      </label>
+      <label class="ctl">Chain
+        <select id="chain"></select>
+      </label>
+      <label class="ctl check">
+        <input id="watchOnly" type="checkbox"> Watchlist only
+      </label>
+      <label class="ctl check">
+        <input id="gainersOnly" type="checkbox"> Growing 7d
+      </label>
+      <span class="ctl-count" id="rowCount"></span>
+    </div>
+
+    <div id="detail" class="detail" hidden></div>
+
+    <div class="table-wrap">
+      <table class="board" id="boardTable">
+        <thead>
+          <tr>
+            <th data-sort="rank" class="num sortable">#</th>
+            <th data-sort="name" class="sortable">Protocol</th>
+            <th>Category</th>
+            <th>Chains</th>
+            <th data-sort="tvl" class="num sortable">TVL</th>
+            <th data-sort="change" class="num sortable">7d</th>
+            <th data-sort="age" class="num sortable">No-token run</th>
+            <th data-sort="anchor" class="num sortable">Anchor</th>
+            <th data-sort="implied" class="num sortable">Implied value</th>
+          </tr>
+        </thead>
+        <tbody id="boardBody"></tbody>
+      </table>
+    </div>
+    <p class="fineprint">Implied value is this radar's own claim, priced from the snapshot's figures by the model under The model. It is not a prediction that a token will be issued. A protocol here records no token in the snapshot's data; that is a statement about the record, not proof that none exists.</p>
+  </section>
+
+  <section id="view-live" class="view" hidden>
+    <p class="view-note">These protocols already have a token that trades. The radar never ranks them: it learns from them. Each one's market cap over TVL is the raw material of the category anchors on the board.</p>
+    <div class="table-wrap">
+      <table class="board" id="liveTable">
+        <thead><tr><th>Protocol</th><th>Symbol</th><th>Category</th><th class="num">Market cap</th><th class="num">TVL</th><th class="num">Mcap / TVL</th><th class="num">7d</th></tr></thead>
+        <tbody id="liveBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="view-aside" class="view" hidden>
+    <p class="view-note" id="asideNote"></p>
+    <div class="table-wrap">
+      <table class="board" id="asideTable">
+        <thead><tr><th>Protocol</th><th>Category</th><th class="num">TVL</th><th>Why it is not ranked</th></tr></thead>
+        <tbody id="asideBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="view-model" class="view" hidden>
+    <div id="modelBody"></div>
+    <div class="sandbox" id="sandbox">
+      <h2>Model sandbox</h2>
+      <p class="view-note">Move a weight and the board re-ranks at once, from each row's own figures. The board handed in is the model's output at the stated constants, not the sandbox's.</p>
+      <div class="sliders">
+        <label>Growth weight <output id="oGrowth"></output>
+          <input id="sGrowth" type="range" min="0" max="1" step="0.05">
+        </label>
+        <label>Maturity range <output id="oMaturity"></output>
+          <input id="sMaturity" type="range" min="0" max="0.8" step="0.01">
+        </label>
+        <label>Breadth per chain <output id="oBreadth"></output>
+          <input id="sBreadth" type="range" min="0" max="0.06" step="0.005">
+        </label>
+        <button id="sReset" type="button">Reset to the model</button>
+      </div>
+      <p class="sandbox-note" id="sandboxNote"></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot" id="foot"></footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
